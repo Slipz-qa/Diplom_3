@@ -1,0 +1,1 @@
+Классы контейнера: input pr-6 pl-6 input_type_text input_size_default input_status_active
