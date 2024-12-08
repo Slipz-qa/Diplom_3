@@ -13,7 +13,7 @@ class TestConstructorAndFeed:
         login_page = LoginPage(browser)
         personal_account_page = PersonalAccountPage(browser)
         feed_page = FeedPage(browser)
-        personal_account_page.login(test_data["email"], test_data["password"])
+        login_page.login(test_data["email"], test_data["password"])
         feed_page.click_constructor()
         assert feed_page.is_constructor_page(), "Не удалось перейти в Конструктор"
 
@@ -23,7 +23,7 @@ class TestConstructorAndFeed:
         login_page = LoginPage(browser)
         personal_account_page = PersonalAccountPage(browser)
         feed_page = FeedPage(browser)
-        personal_account_page.login(test_data["email"], test_data["password"])
+        login_page.login(test_data["email"], test_data["password"])
         feed_page.open_feed()
         assert feed_page.is_feed_page(), "Не удалось перейти на Ленту заказов"
 
@@ -33,7 +33,7 @@ class TestConstructorAndFeed:
         login_page = LoginPage(browser)
         personal_account_page = PersonalAccountPage(browser)
         feed_page = FeedPage(browser)
-        personal_account_page.login(test_data["email"], test_data["password"])
+        login_page.login(test_data["email"], test_data["password"])
         feed_page.open_feed()
         feed_page.click_ingredient()
         assert feed_page.is_modal_open(), "Модальное окно не открылось"
@@ -43,7 +43,7 @@ class TestConstructorAndFeed:
         login_page = LoginPage(browser)
         personal_account_page = PersonalAccountPage(browser)
         feed_page = FeedPage(browser)
-        personal_account_page.login(test_data["email"], test_data["password"])
+        login_page.login(test_data["email"], test_data["password"])
         feed_page.open_feed()
         feed_page.click_ingredient()
         feed_page.close_modal()
@@ -54,7 +54,7 @@ class TestConstructorAndFeed:
         login_page = LoginPage(browser)
         personal_account_page = PersonalAccountPage(browser)
         feed_page = FeedPage(browser)
-        personal_account_page.login(test_data["email"], test_data["password"])
+        login_page.login(test_data["email"], test_data["password"])
         feed_page.open_feed()
         feed_page.click_constructor()
         feed_page.drag_and_drop_ingredient("Флюоресцентная булка R2-D3")
@@ -63,26 +63,19 @@ class TestConstructorAndFeed:
         feed_page.create_order()
         order_number = feed_page.extract_order_number()
         assert order_number, "Номер заказа не отображается"
-        print(f"Номер заказа: {order_number}")
 
     @allure.title("Увеличение каунтера")
     def test_check_counters(self, browser, test_data):
         login_page = LoginPage(browser)
         personal_account_page = PersonalAccountPage(browser)
         feed_page = FeedPage(browser)
-
-        personal_account_page.login(test_data["email"], test_data["password"])
-
+        login_page.login(test_data["email"], test_data["password"])
         feed_page.click_constructor()
-
         initial_counter = feed_page.get_counter()
-
         feed_page.drag_and_drop_ingredient("Флюоресцентная булка R2-D3")
         feed_page.drag_and_drop_ingredient("Соус Spicy-X")
         feed_page.drag_and_drop_ingredient("Мясо бессмертных моллюсков Protostomia")
-
         final_counter = feed_page.get_counter()
-
         assert final_counter == initial_counter + 2, \
             f"Ожидалось, что каунтер увеличится на 2, но было {final_counter - initial_counter}."
 

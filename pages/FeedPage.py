@@ -15,10 +15,10 @@ from selenium.common.exceptions import ElementClickInterceptedException
 class FeedPage(BasePage):
     @allure.step("Переход на страницу Ленты заказов")
     def open_feed(self):
-        feed_link = self.wait.until(
-            EC.element_to_be_clickable(FeedPageLocators.FEED_LINK)
-        )
-        feed_link.click()
+        """
+        Открывает страницу ленты заказов.
+        """
+        self.click_element(FeedPageLocators.FEED_LINK)
 
     @allure.step("Проверяем, что находимся на странице Ленты заказов")
     def is_feed_page(self):
@@ -26,23 +26,19 @@ class FeedPage(BasePage):
 
     @allure.step("Кликаем на ингредиент для открытия модального окна")
     def click_ingredient(self):
-        ingredient = self.wait.until(
-            EC.element_to_be_clickable(FeedPageLocators.INGREDIENT_ITEM)
-        )
-        ingredient.click()
+        """
+        Кликает на элемент ингредиента для открытия модального окна.
+        """
+        self.click_element(FeedPageLocators.INGREDIENT_ITEM)
 
     @allure.step("Проверяем, что модальное окно открыто и видимо")
     def is_modal_open(self):
-        try:
-            print("Проверяем наличие модального окна...")
-            modal = self.wait.until(
-                EC.presence_of_element_located((By.CLASS_NAME, "Modal_orderBox__1xWdi"))
-            )
-            self.browser.execute_script("arguments[0].scrollIntoView(true);", modal)
-            return modal.is_displayed()
-        except Exception as e:
-            print(f"Модальное окно не найдено: {e}")
-            return False
+        """
+        Проверяет, что модальное окно открыто и видимо.
+        """
+        modal_locator = (By.CLASS_NAME, "Modal_orderBox__1xWdi")
+        modal = self.wait_for_element_to_be_visible(modal_locator)
+        return modal.is_displayed()
 
     @allure.step("Закрываем модальное окно кликом по крестику")
     def close_modal(self):
@@ -65,7 +61,7 @@ class FeedPage(BasePage):
 
             # Скроллим к кнопке и кликаем на неё
             self.browser.execute_script("arguments[0].scrollIntoView(true);", close_button)
-            #time.sleep(0.5)  # Короткая пауза для стабильности
+            # time.sleep(0.5)  # Короткая пауза для стабильности
 
             print("Кнопка видима и активна. Выполняем клик.")
             close_button.click()
@@ -83,23 +79,25 @@ class FeedPage(BasePage):
 
     @allure.step("Проверяет, что модальное окно закрыто")
     def is_modal_closed(self):
+        """
+        Проверяет, что модальное окно закрыто, ожидая исчезновения кнопки закрытия.
+        :return: True, если окно успешно закрыто, иначе False.
+        """
         try:
-            # Проверяем, что класс для открытого окна исчез
-            self.wait.until_not(
-                EC.presence_of_element_located(FeedPageLocators.ClOSE_BUTTON_FIND)
-            )
+            # Используем метод из BasePage для проверки исчезновения кнопки
+            self.wait_for_element_to_disappear(FeedPageLocators.ClOSE_BUTTON_FIND)
             print("Модальное окно успешно закрыто.")
             return True
-        except Exception as e:
+        except AssertionError as e:
             print(f"Модальное окно не закрылось: {str(e)}")
             return False
 
-    @allure.step("Кликает на 'Конструктор")
+    @allure.step("Кликает на 'Конструктор'")
     def click_constructor(self):
-        constructor_link = self.wait.until(
-            EC.element_to_be_clickable((By.XPATH, '//a[@href="/"]'))
-        )
-        constructor_link.click()
+        """
+        Кликает на ссылку 'Конструктор'.
+        """
+        self.click_element(FeedPageLocators.CONSTRUCTOR)
 
     @allure.step("Проверяет, что мы находимся на главной страниц")
     def is_constructor_page(self):
@@ -107,18 +105,23 @@ class FeedPage(BasePage):
 
     @allure.step("Ожидает, пока элемент станет видимым, и скроллит до него")
     def wait_and_scroll_to_element(self, locator, timeout=10):
-        element = WebDriverWait(self.browser, timeout).until(
-            EC.visibility_of_element_located(locator)
-        )
-        self.browser.execute_script("arguments[0].scrollIntoView(true);", element)
+        """
+        Ожидает, пока элемент станет видимым, и прокручивает страницу до него.
+        """
+        element = self.wait_for_element_to_be_visible(locator, timeout)
+        self.scroll_to_element(element)
         return element
 
     @allure.step("Ищет заказ в ленте заказов")
     def find_order_in_feed(self, order_number):
+        """
+        Ищет заказ по номеру в ленте заказов.
+
+        :param order_number: Номер заказа для поиска.
+        :return: True, если заказ найден, иначе False.
+        """
         try:
-            orders = self.wait.until(
-                EC.presence_of_all_elements_located(OrderHistoryLocators.ORDER_ITEM)
-            )
+            orders = self.wait_for_elements_to_be_present(OrderHistoryLocators.ORDER_ITEM)
             for order in orders:
                 if order_number in order.text:
                     print(f"[LOG] Заказ {order_number} найден в ленте.")
@@ -146,12 +149,15 @@ class FeedPage(BasePage):
 
         ActionChains(self.browser).drag_and_drop(ingredient, drop_zone).perform()
 
-    @allure.step("ажимает на кнопку оформления заказа")
+    @allure.step("Нажимает на кнопку оформления заказа")
     def create_order(self):
-        create_order_button = self.wait_and_scroll_to_element(FeedPageLocators.CREATE_ORDER_BUTTON)
-        create_order_button.click()
+        """
+        Нажимает на кнопку оформления заказа и ожидает завершения действия.
+        """
+        self.scroll_to_element_and_click(FeedPageLocators.CREATE_ORDER_BUTTON)
 
-        WebDriverWait(self.browser, 15).until(lambda driver: True)
+        # Неявное ожидание или проверка может быть заменена на более конкретную логику
+        self.wait_for_custom_condition(lambda driver: True, timeout=15)
 
     @allure.step("Извлекает номер заказа из модального окна")
     def get_order_number(self):
@@ -160,45 +166,53 @@ class FeedPage(BasePage):
 
     @allure.step("Ожидает, пока элемент исчезнет")
     def wait_for_element_to_disappear(self, locator, timeout=10):
-        WebDriverWait(self.browser, timeout).until(
-            EC.invisibility_of_element(locator)
-        )
+        """
+        Ожидает, пока элемент станет невидимым или исчезнет.
+
+        :param locator: Локатор элемента.
+        :param timeout: Таймаут ожидания.
+        """
+        self.wait.until(EC.invisibility_of_element_located(locator),
+                        message=f"Элемент с локатором {locator} не исчез в течение {timeout} секунд.")
 
     @allure.step("Закрывает модальное окно кликом по крестику, проверяя все состояния")
     def close_modal_for_order(self):
+        """
+        Закрывает модальное окно кликом по кнопке закрытия (крестику), проверяя все состояния.
+        """
         try:
             print("Проверяем наличие открытого модального окна...")
 
-            # Ждем появления открытого модального окна
+            # Ожидаем появления модального окна
             self.wait.until(
                 EC.presence_of_element_located(FeedPageLocators.CLOSE_MODAL_W4),
-                message="Открытое модальное окно не обнаружено."
+                message="Модальное окно не открылось."
             )
             print("Модальное окно найдено.")
 
             # Находим кнопку закрытия
             close_button = self.wait.until(
-                EC.element_to_be_clickable((By.CSS_SELECTOR, ".Modal_modal__close__TnseK")),
-                message="Кнопка закрытия не появилась или не кликабельна."
+                EC.element_to_be_clickable(FeedPageLocators.CLOSE_BUTTON),
+                message="Кнопка закрытия не доступна."
             )
             print("Кнопка закрытия найдена.")
 
-            # Скроллим к кнопке, чтобы она попала в зону видимости
+            # Скроллим к кнопке, чтобы она была в зоне видимости
             self.browser.execute_script("arguments[0].scrollIntoView({block: 'center'});", close_button)
-            print("Прокрутка к кнопке выполнена.")
+            print("Прокрутка к кнопке завершена.")
 
-            # Выполняем клик по кнопке закрытия
+            # Кликаем по кнопке закрытия
             try:
                 close_button.click()
                 print("Клик по кнопке закрытия выполнен.")
             except ElementClickInterceptedException:
-                print("Клик по кнопке перехвачен, выполняем JavaScript-клик.")
+                print("Клик по кнопке перехвачен, используем JavaScript-клик.")
                 self.browser.execute_script("arguments[0].click();", close_button)
 
             # Ожидаем исчезновения модального окна
             self.wait.until_not(
                 EC.presence_of_element_located(FeedPageLocators.CLOSE_MODAL_W4),
-                message="Модальное окно не закрылось."
+                message="Модальное окно не закрылось после клика."
             )
             print("Модальное окно успешно закрыто.")
 
@@ -209,7 +223,7 @@ class FeedPage(BasePage):
     @allure.step("Извлекает номер заказа из открытого модального окна")
     def extract_order_number(self):
         print("Проверяем наличие открытого модального окна...")
-        time.sleep(5) #Это единственный sleep,я пыталась заменить, но остальные не так работают
+        time.sleep(5) #Работает только sleep
 
         # Ждём, пока появится модальное окно с идентификатором заказа
         modal_element = self.wait.until(
@@ -242,13 +256,13 @@ class FeedPage(BasePage):
 
         # Открываем раздел "История заказов"
         history_button = self.wait.until(
-            EC.element_to_be_clickable((By.XPATH, '//a[text()="История заказов"]')),
+            EC.element_to_be_clickable(AccountPageLocators.HISTORY),
             message="Кнопка 'История заказов' не найдена или не кликабельна."
         )
         history_button.click()
 
         # Находим список заказов
-        order_list = self.browser.find_element(By.CLASS_NAME, "OrderHistory_profileList__374GU")
+        order_list = self.browser.find_element(*FeedPageLocators.ORDER_HISTORY_LIST)
 
         # Цикл для прокрутки и поиска заказа
         attempts = 0
@@ -276,9 +290,8 @@ class FeedPage(BasePage):
 
     @allure.step("Проверяет, что заказ отображается в разделе 'В работе'")
     def is_order_in_progress(self, order_number):
-        orders = self.browser.find_elements(
-            By.CSS_SELECTOR, "li.text.text_type_digits-default.mb-2"
-        )
+        # Используем локатор из файла локаторов
+        orders = self.browser.find_elements(*FeedPageLocators.ORDERS_IN_PROGRESS)
         return any(order.text == order_number for order in orders)
 
     @allure.step("Обновляет текущую страницу")

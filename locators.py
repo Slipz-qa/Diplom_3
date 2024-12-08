@@ -15,6 +15,10 @@ class AccountPageLocators:
     LOGOUT_BUTTON = (By.XPATH, '//button[contains(text(), "Выход")]')
     ORDER_HISTORY_LINK = (By.LINK_TEXT, "История заказов")
     PASSWORD_FIELD = (By.NAME, "Пароль")
+    ORDER_HISTOR = (By.XPATH, '//a[@href="/feed"]')
+    PASSWORD_FIELD_RECOVERY = (By.XPATH, "//div[@class='input pr-6 pl-6 input_type_password input_size_default']//input[@type='password']")
+    HISTORY = (By.XPATH, '//a[text()="История заказов"]')
+    ACCOUNT = (By.XPATH, '//a[@href="/account/profile"]')
 
 
 class MainPageLocators:
@@ -48,3 +52,8 @@ class FeedPageLocators:
     INGREDIENT_COUNTER = (By.CSS_SELECTOR, ".counter_counter__ZNLkj .counter_counter__num__3nue1")
     ORDER_ITEM = (By.CSS_SELECTOR, "li.OrderHistory_listItem__2x95r")
     ORDER_MODAL = (By.CLASS_NAME, "OrderDetails_modal__content")
+    CONSTRUCTOR = (By.XPATH, '//a[@href="/"]')
+    CLOSE_BUTTON = (By.CSS_SELECTOR, ".Modal_modal__close__TnseK")
+    ORDER_HISTORY_LIST = (By.CLASS_NAME, "OrderHistory_profileList__374GU")
+    ORDERS_IN_PROGRESS = (By.CSS_SELECTOR, "li.text.text_type_digits-default.mb-2")
+
