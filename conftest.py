@@ -26,17 +26,6 @@ def browser(request):
     driver.quit()
 
 
-
-# Тестовые данные: логин и пароль
-TEST_DATA = {
-    "email": "ArtemBarrel@yandex.ru",
-    "password": "123456"
-}
-@pytest.fixture
-def test_data():
-    """Фикстура для предоставления тестовых данных."""
-    return TEST_DATA
-
 def pytest_addoption(parser):
     """Добавляем параметр --browser для выбора браузера."""
     parser.addoption(

@@ -8,6 +8,8 @@ class LoginPageLocators:
     SHOW_PASSWORD_ICON = (By.CLASS_NAME, "input__icon")
     LOGIN_BUTTON = (By.XPATH, '//button[text()="Войти"]')
     PASSWORD_CONTAINER = (By.CLASS_NAME, "input")
+    ACCOUNT_BUTTON = (By.XPATH, '//a[@href="/account"]')
+    PASSWORD_FIELD = (By.NAME, "Пароль")
 
 class AccountPageLocators:
     ACCOUNT_BUTTON = (By.XPATH, '//a[@href="/account"]')
@@ -19,6 +21,8 @@ class AccountPageLocators:
     PASSWORD_FIELD_RECOVERY = (By.XPATH, "//div[@class='input pr-6 pl-6 input_type_password input_size_default']//input[@type='password']")
     HISTORY = (By.XPATH, '//a[text()="История заказов"]')
     ACCOUNT = (By.XPATH, '//a[@href="/account/profile"]')
+    ORDER_TEXTBOX = (By.CLASS_NAME, "OrderHistory_textBox__3lgbs")
+    ORDER_ITEM = (By.CLASS_NAME, "OrderHistory_listItem__2x95r")
 
 
 class MainPageLocators:
@@ -56,4 +60,10 @@ class FeedPageLocators:
     CLOSE_BUTTON = (By.CSS_SELECTOR, ".Modal_modal__close__TnseK")
     ORDER_HISTORY_LIST = (By.CLASS_NAME, "OrderHistory_profileList__374GU")
     ORDERS_IN_PROGRESS = (By.CSS_SELECTOR, "li.text.text_type_digits-default.mb-2")
+    MODAL_OVERLAY = (By.CSS_SELECTOR, "div.Modal_modal_overlay__x2ZCr")
+    MODAL_ORDER_BOX = (By.CLASS_NAME, "Modal_orderBox__1xWdi")
+    ORDER_NUMBER_MODAL = (By.XPATH, '//p[contains(text(), "идентификатор заказа")]/preceding-sibling::h2')
+    ORDER_ITEM = (By.CLASS_NAME, "OrderHistory_listItem__2x95r")
+    HISTORY = (By.XPATH, '//a[text()="История заказов"]')
+
 

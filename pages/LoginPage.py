@@ -31,7 +31,7 @@ class LoginPage (BasePage):
         """
         Вводит пароль в соответствующее поле.
         """
-        self.enter_text(AccountPageLocators.PASSWORD_FIELD, password)
+        self.enter_text(LoginPageLocators.PASSWORD_FIELD, password)
 
     @allure.step("Прокручивает к иконке и кликает на неё")
     def toggle_password_visibility(self):
@@ -59,7 +59,7 @@ class LoginPage (BasePage):
         """
         Кликает по кнопке перехода в личный кабинет.
         """
-        self.click_element(AccountPageLocators.ACCOUNT_BUTTON)
+        self.click_element(LoginPageLocators.ACCOUNT_BUTTON)
 
     @allure.step("Клик на кнопку 'Войти'")
     def submit_login(self):
@@ -70,7 +70,11 @@ class LoginPage (BasePage):
 
     @allure.step("Проверка, что мы находимся на странице логина")
     def is_login_page(self):
-        return "login" in self.browser.current_url
+        """
+        Проверяет, что текущий URL содержит 'login'.
+        """
+        current_url = self.get_current_url()  # Используем метод из BasePage
+        return "login" in current_url
 
 
     def login(self, email, password):

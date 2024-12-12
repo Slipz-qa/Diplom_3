@@ -1,5 +1,5 @@
 
-from selenium.webdriver.support import expected_conditions as EC
+
 from pages.BasePage import BasePage
 from locators import *
 
@@ -22,11 +22,11 @@ class PersonalAccountPage(BasePage):
 
     @allure.step("Проверяем, что мы находимся на странице ленты заказов")
     def is_feed_page(self):
-        return "feed" in self.browser.current_url
+        return "feed" in self.get_current_url()
 
     @allure.step("Проверяем, что мы находимся на странице восстановления пароля")
     def is_recovery_page(self):
-        return "forgot" in self.browser.current_url
+        return "forgot" in self.get_current_url()
 
     @allure.step("Проверяем, что мы находимся на странице смены пароля")
     def is_reset_page(self):
@@ -34,22 +34,19 @@ class PersonalAccountPage(BasePage):
         Проверяет, что текущий URL содержит 'reset-password'.
         """
         self.wait_for_url_contains("reset-password")
-        current_url = self.browser.current_url
+        current_url = self.get_current_url()  # Используем метод из BasePage
         allure.attach(body=f"Текущий URL: {current_url}", name="Current URL",
                       attachment_type=allure.attachment_type.TEXT)
         return "reset-password" in current_url
 
-    @allure.step("Переход в Личный кабинет")
     def go_to_personal_account(self):
         """
         Кликает по кнопке перехода в личный кабинет и ожидает, пока не перейдем на страницу профиля.
         """
-        account_link = self.wait.until(
-            EC.element_to_be_clickable(AccountPageLocators.ACCOUNT_BUTTON)
-        )
-        account_link.click()
+        # Кликаем по кнопке перехода в Личный кабинет с помощью нового метода
+        self.click_element(AccountPageLocators.ACCOUNT_BUTTON)
 
-        # Используем метод из BasePage для ожидания URL
+        # Ожидаем, пока URL не будет содержать "/account/profile"
         self.wait_for_url_contains("/account/profile")
 
     @allure.step("Проверяем, что мы на странице Личного кабинета")
@@ -101,8 +98,7 @@ class PersonalAccountPage(BasePage):
         self.click_element(AccountPageLocators.ORDER_HISTORY_LINK)
 
         # Извлекаем номер первого заказа из истории
-        order_number = self.get_element_text(OrderHistoryLocators.ORDER_ITEM, timeout=15)
-        print(f"[LOG] Найден номер заказа: {order_number}")
+        order_number = self.get_element_text(AccountPageLocators.ORDER_ITEM, timeout=15)
         return order_number
 
     @allure.step("Получение номера заказа из истории")
@@ -110,7 +106,7 @@ class PersonalAccountPage(BasePage):
         """
         Получает номер заказа из истории заказов.
         """
-        order_number = self.get_element_text(OrderHistoryLocators.ORDER_TEXTBOX, timeout=15)
+        order_number = self.get_element_text(AccountPageLocators.ORDER_TEXTBOX, timeout=15)
 
         if order_number:
             print(f"[LOG] Найден номер заказа: {order_number}")
@@ -119,7 +115,10 @@ class PersonalAccountPage(BasePage):
 
         return order_number
 
-
     @allure.step("Проверяем, что мы находимся на странице ленты заказов")
     def is_oder_history_page(self):
-        return "history" in self.browser.current_url
+        """
+        Проверяет, что текущий URL содержит 'history'.
+        """
+        current_url = self.get_current_url()  # Используем метод из BasePage
+        return "history" in current_url
